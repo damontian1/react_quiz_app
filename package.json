@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "NODE_ENV=production node server.js",
     "development": "node node_modules/webpack-dev-server/bin/webpack-dev-server.js",
     "production": "node node_modules/webpack/bin/webpack.js && open http://localhost:8080 && NODE_ENV=production node server.js"
 
