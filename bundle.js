@@ -187,25 +187,40 @@
 	var cachedSetTimeout;
 	var cachedClearTimeout;
 
+	function defaultSetTimout() {
+	    throw new Error('setTimeout has not been defined');
+	}
+	function defaultClearTimeout () {
+	    throw new Error('clearTimeout has not been defined');
+	}
 	(function () {
 	    try {
-	        cachedSetTimeout = setTimeout;
-	    } catch (e) {
-	        cachedSetTimeout = function () {
-	            throw new Error('setTimeout is not defined');
+	        if (typeof setTimeout === 'function') {
+	            cachedSetTimeout = setTimeout;
+	        } else {
+	            cachedSetTimeout = defaultSetTimout;
 	        }
+	    } catch (e) {
+	        cachedSetTimeout = defaultSetTimout;
 	    }
 	    try {
-	        cachedClearTimeout = clearTimeout;
-	    } catch (e) {
-	        cachedClearTimeout = function () {
-	            throw new Error('clearTimeout is not defined');
+	        if (typeof clearTimeout === 'function') {
+	            cachedClearTimeout = clearTimeout;
+	        } else {
+	            cachedClearTimeout = defaultClearTimeout;
 	        }
+	    } catch (e) {
+	        cachedClearTimeout = defaultClearTimeout;
 	    }
 	} ())
 	function runTimeout(fun) {
 	    if (cachedSetTimeout === setTimeout) {
 	        //normal enviroments in sane situations
+	        return setTimeout(fun, 0);
+	    }
+	    // if setTimeout wasn't available but was latter defined
+	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+	        cachedSetTimeout = setTimeout;
 	        return setTimeout(fun, 0);
 	    }
 	    try {
@@ -226,6 +241,11 @@
 	function runClearTimeout(marker) {
 	    if (cachedClearTimeout === clearTimeout) {
 	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
+	    }
+	    // if clearTimeout wasn't available but was latter defined
+	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+	        cachedClearTimeout = clearTimeout;
 	        return clearTimeout(marker);
 	    }
 	    try {
@@ -21472,11 +21492,21 @@
 		value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(2);
 
 	var _react2 = _interopRequireDefault(_react);
+
+	var _QuestionsList = __webpack_require__(180);
+
+	var _QuestionsList2 = _interopRequireDefault(_QuestionsList);
+
+	var _Scorebox = __webpack_require__(182);
+
+	var _Scorebox2 = _interopRequireDefault(_Scorebox);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21492,16 +21522,80 @@
 		function App() {
 			_classCallCheck(this, App);
 
-			return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).apply(this, arguments));
+			var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this));
+
+			_this.state = {
+				questions: [{
+					id: 1,
+					text: "what color is the sky?",
+					choices: [{
+						id: "a",
+						text: "blue"
+					}, {
+						id: "b",
+						text: "red"
+					}, {
+						id: "c",
+						text: "pink"
+					}],
+					answer: "a"
+				}, {
+					id: 2,
+					text: "how many wheels does a sedan have?",
+					choices: [{
+						id: "a",
+						text: 2
+					}, {
+						id: "b",
+						text: 4
+					}, {
+						id: "c",
+						text: 6
+					}],
+					answer: "b"
+				}, {
+					id: 3,
+					text: "what state is San Francisco in?",
+					choices: [{
+						id: "a",
+						text: "California"
+					}, {
+						id: "b",
+						text: "Nevada"
+					}, {
+						id: "c",
+						text: "Texas"
+					}],
+					answer: "a"
+				}],
+				score: 0,
+				currentQuestion: 1
+			};
+
+			_this.changeHandler = _this.changeHandler.bind(_this);
+			return _this;
 		}
 
 		_createClass(App, [{
+			key: "changeHandler",
+			value: function changeHandler(answer, choice) {
+				choice.target.value === answer ? this.setState({
+					score: this.state.score + 1,
+					currentQuestion: this.state.currentQuestion + 1
+				}) : this.setState({
+					currentQuestion: this.state.currentQuestion + 1
+				});
+			}
+		}, {
 			key: "render",
 			value: function render() {
 				return _react2.default.createElement(
 					"div",
 					null,
-					"hello"
+					_react2.default.createElement(_Scorebox2.default, this.state),
+					_react2.default.createElement(_QuestionsList2.default, _extends({}, this.state, {
+						changeHandler: this.changeHandler
+					}))
 				);
 			}
 		}]);
@@ -21510,6 +21604,184 @@
 	}(_react2.default.Component);
 
 	exports.default = App;
+
+/***/ },
+/* 180 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Questions = __webpack_require__(181);
+
+	var _Questions2 = _interopRequireDefault(_Questions);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var QuestionsList = function QuestionsList(props) {
+
+		return _react2.default.createElement(
+			"div",
+			null,
+			props.questions.map(function (question) {
+				if (question.id === props.currentQuestion) {
+					return _react2.default.createElement(_Questions2.default, {
+						question: question,
+						key: question.id,
+						changeHandler: props.changeHandler
+
+					});
+				}
+			})
+		);
+	};
+
+	exports.default = QuestionsList;
+
+/***/ },
+/* 181 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Questions = function Questions(props) {
+
+		return _react2.default.createElement(
+			"div",
+			{ className: "well" },
+			_react2.default.createElement(
+				"h3",
+				null,
+				props.question.text
+			),
+			_react2.default.createElement(
+				"ul",
+				{ className: "list-group" },
+				props.question.choices.map(function (choice) {
+					return _react2.default.createElement(
+						"li",
+						{ className: "list-group-item", key: choice.id },
+						choice.id,
+						" ",
+						_react2.default.createElement("input", { type: "radio", onChange: props.changeHandler.bind(this, props.question.answer), value: choice.id }),
+						" ",
+						choice.text
+					);
+				})
+			)
+		);
+	};
+
+	exports.default = Questions;
+
+/***/ },
+/* 182 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Results = __webpack_require__(183);
+
+	var _Results2 = _interopRequireDefault(_Results);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Scorebox = function Scorebox(props) {
+
+		return _react2.default.createElement(
+			"div",
+			{ className: "well" },
+			props.currentQuestion <= props.questions.length ? _react2.default.createElement(
+				"p",
+				null,
+				"Question ",
+				props.currentQuestion,
+				" of ",
+				props.questions.length,
+				_react2.default.createElement(
+					"span",
+					{ className: "pull-right" },
+					"Score: ",
+					Math.round(props.score / props.questions.length * 100),
+					" %"
+				)
+			) : _react2.default.createElement(_Results2.default, props)
+		);
+	};
+
+	exports.default = Scorebox;
+
+/***/ },
+/* 183 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Results = function Results(props) {
+
+		return _react2.default.createElement(
+			"div",
+			{ style: { "display": "flex", "height": "75vh", "justify-content": "center", "align-items": "center" } },
+			_react2.default.createElement(
+				"div",
+				{ className: "text-center" },
+				_react2.default.createElement(
+					"h4",
+					null,
+					"You finished the Exam"
+				),
+				_react2.default.createElement(
+					"p",
+					null,
+					"Your score was ",
+					Math.round(props.score / props.questions.length * 100),
+					"%"
+				),
+				_react2.default.createElement(
+					"a",
+					{ href: "." },
+					"Take Test Again"
+				)
+			)
+		);
+	};
+
+	exports.default = Results;
 
 /***/ }
 /******/ ]);
