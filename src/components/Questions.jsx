@@ -2,10 +2,12 @@ import React from "react";
 
 const Questions = (props) => {
 	
+	let question = props.question.text
+	let questionCased = question.charAt(0).toUpperCase() + question.substring(1)
 
 	return(
 		<div className="well">
-			<h3>{props.question.text}</h3>
+			<h3>{questionCased}</h3>
 			<ul className="list-group">
 				{
 					props.question.choices.map(function(choice){

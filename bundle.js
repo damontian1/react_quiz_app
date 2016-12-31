@@ -21663,13 +21663,16 @@
 
 	var Questions = function Questions(props) {
 
+		var question = props.question.text;
+		var questionCased = question.charAt(0).toUpperCase() + question.substring(1);
+
 		return _react2.default.createElement(
 			"div",
 			{ className: "well" },
 			_react2.default.createElement(
 				"h3",
 				null,
-				props.question.text
+				questionCased
 			),
 			_react2.default.createElement(
 				"ul",
