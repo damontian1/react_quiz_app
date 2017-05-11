@@ -11,7 +11,7 @@ class App extends React.Component{
 			questions: [
 				{
 					id: 1,
-					text: "what color is the sky?",
+					text: "what color be the skyyy?",
 					choices: [
 						{
 							id: "a",
