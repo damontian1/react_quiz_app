@@ -21531,7 +21531,7 @@
 			_this.state = {
 				questions: [{
 					id: 1,
-					text: "what color is the sky?",
+					text: "what color is the ocean?",
 					choices: [{
 						id: "a",
 						text: "blue"
