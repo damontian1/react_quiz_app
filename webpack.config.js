@@ -5,6 +5,7 @@ module.exports = {
   output: {
     filename: "./bundle.js"
   },
+  devtool: 'source-map',
   module: {
     loaders: [
       {
@@ -15,6 +16,5 @@ module.exports = {
         }
       }
     ]
-  },
-  devServer: { inline: true }
+  }
 }

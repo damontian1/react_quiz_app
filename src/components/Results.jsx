@@ -2,7 +2,6 @@ import React from "react";
 
 const Results = (props) => {
 	
-
 	return(
 		<div style={{"display": "flex","height":"75vh","justify-content":"center","align-items":"center"}}>
 			<div className="text-center" >

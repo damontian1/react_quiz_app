@@ -9,6 +9,8 @@ const QuestionsList = (props) => {
 		<div>
 			{
 				props.questions.map(function(question){
+					var a = question;
+					console.log(a);
 					if(question.id === props.currentQuestion){ 
 						return(
 							<Questions 
